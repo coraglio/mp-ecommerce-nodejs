@@ -112,7 +112,7 @@ app.get('/success', function (req, res) {
 });
 
 app.post('/ipn', function (req, res) {
-    console.log(req.body);
+    console.log(req);
     res.status(200).send();
 });
 
