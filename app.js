@@ -51,23 +51,29 @@ app.get('/detail', function (req, res, next) {
                 picture_url: URL + '/' + img_path[1] + '/' + img_path[2],
                 quantity: 1,
                 external_reference: 'ABCD1234',
-                description: 'Dispositivo móvil de Tienda e-commerc'
+                description: 'Dispositivo móvil de Tienda e-commerce',
+                currency_id: 'ARS',
             }
         ],
         payer: payer,
         payment_methods: {
             excluded_payment_methods: [
                 { id: 'amex' },
-                { id: 'atm' }
+            ],
+            excluded_payment_types: [
+                {
+                    "id": "atm"
+                }
             ],
             installments: 6
         },
-        "back_urls": {
-            "success": URL + "/success",
-            "failure": URL + "/failure",
-            "pending": URL + "/pending"
+        back_urls: {
+            success: URL + "/success",
+            failure: URL + "/failure",
+            pending: URL + "/pending"
         },
-        "auto_return": "approved",
+        auto_return: "approved",
+        notification_url: URL + '/ipn',
     };
 
     mercadopago.preferences.create(preference)
@@ -84,16 +90,30 @@ app.get('/detail', function (req, res, next) {
     // next()
 });
 
-app.get('/failure', function (req, res){
+app.get('/failure', function (req, res) {
     res.send('El pago fue rechazado')
 });
 
-app.get('/pending', function (req, res){
+app.get('/pending', function (req, res) {
     res.send('El pago está pendiente')
 });
 
-app.get('/success', function (req, res){
-    res.send('El pago fue exitoso')
+app.get('/success', function (req, res) {
+    mercadopago.payment.get(req.query.collection_id).then(function (mp) {
+        res.send('El pago fue exitoso<br>' +
+            `payment_method_id: ${mp.body.payment_method_id}<br>` +
+            `transaction_amount: ${mp.body.transaction_amount}<br>` +
+            `order: ${mp.body.order.id}<br>` +
+            `id: ${mp.body.id}<br>`)
+    }).catch(function (error) {
+        console.log(error);
+        res.status(500).send();
+    });
+});
+
+app.post('/ipn', function (req, res) {
+    console.log(req.body);
+    res.status(200).send();
 });
 
 app.use(express.static('assets'));
