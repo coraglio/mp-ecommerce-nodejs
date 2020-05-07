@@ -3,7 +3,6 @@ var express = require('express');
 var exphbs = require('express-handlebars');
 // SDK de Mercado Pago
 const mercadopago = require('mercadopago');
-
 // Agrega credenciales
 mercadopago.configure({
     access_token: 'APP_USR-6317427424180639-042414-47e969706991d3a442922b0702a0da44-469485398'
@@ -30,6 +29,7 @@ var payer = {
 }
 
 var app = express();
+app.set('port', process.env.PORT || 3000);
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -100,4 +100,4 @@ app.use(express.static('assets'));
 
 app.use('/assets', express.static(__dirname + '/assets'));
 
-app.listen(3000);
+app.listen(app.get('port'));
