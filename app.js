@@ -39,7 +39,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/detail', function (req, res, next) {
-    let img_path = new URL(req.query.img, URL)
+    let img_path = req.query.img.split('/');
 
     // Crea un objeto de preferencia
     let preference = {
@@ -48,7 +48,7 @@ app.get('/detail', function (req, res, next) {
                 id: 1234,
                 title: req.query.title,
                 unit_price: parseFloat(req.query.price),
-                picture_url: img_path,
+                picture_url: URL + '/' + img_path[1] + '/' + img_path[2],
                 quantity: 1,
                 external_reference: 'ABCD1234',
                 description: 'Dispositivo móvil de Tienda e-commerc'
