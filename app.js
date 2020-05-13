@@ -43,6 +43,7 @@ app.get('/detail', function (req, res, next) {
 
     // Crea un objeto de preferencia
     let preference = {
+        external_reference: 'ABCD1234',
         items: [
             {
                 id: 1234,
@@ -50,7 +51,6 @@ app.get('/detail', function (req, res, next) {
                 unit_price: parseFloat(req.query.price),
                 picture_url: URL + '/' + img_path[1] + '/' + img_path[2],
                 quantity: 1,
-                external_reference: 'ABCD1234',
                 description: 'Dispositivo móvil de Tienda e-commerce',
                 currency_id: 'ARS',
             }
@@ -112,7 +112,7 @@ app.get('/success', function (req, res) {
 });
 
 app.post('/ipn', function (req, res) {
-    console.log(req);
+    console.log(req.query);
     res.status(200).send();
 });
 
